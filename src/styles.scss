@@ -2,3 +2,23 @@
 
 /* Importing Bootstrap SCSS file. */
 @import 'bootstrap/scss/bootstrap';
+
+
+.my-btn-style {
+    border-color: orange;
+    color: orange;
+
+    &:hover {
+        background-color: orange;
+        outline-color: orange;
+        border-color: orange;
+    }
+}
+
+.my-form-control-style {
+
+    &:focus {
+        border-color: rgba(255, 166, 0, 0.476);
+        box-shadow: 0 0 0 0.25rem rgba(233, 143, 17, 0.25);
+    }
+}

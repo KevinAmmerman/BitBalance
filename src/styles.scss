@@ -3,15 +3,19 @@
 /* Importing Bootstrap SCSS file. */
 @import 'bootstrap/scss/bootstrap';
 
+:root {
+    --main-color: #FF9900;
+}
+
 
 .my-btn-style {
-    border-color: orange;
-    color: orange;
+    border-color: var(--main-color);
+    color: var(--main-color);
 
     &:hover {
-        background-color: orange;
-        outline-color: orange;
-        border-color: orange;
+        background-color: var(--main-color);
+        outline-color: var(--main-color);
+        border-color: var(--main-color);
     }
 }
 

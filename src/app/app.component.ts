@@ -2,11 +2,12 @@ import { Component, inject } from '@angular/core';
 import { Firestore, collection, collectionData, getDocs } from '@angular/fire/firestore';
 import { RouterOutlet } from '@angular/router';
 import { Observable } from 'rxjs';
+import { HeaderComponent } from './shared/header/header.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, HeaderComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

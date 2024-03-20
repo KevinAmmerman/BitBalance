@@ -8,6 +8,7 @@ import { Observable, catchError, of, retry } from 'rxjs';
 export class BitcoinDataService {
 
   urlHistoricalData: string = "https://mempool.space/api/v1/historical-price";
+  urlCurrentPrice: string = "https://mempool.space/api/v1/prices";
 
   constructor(private http: HttpClient) { }
 
@@ -20,4 +21,18 @@ export class BitcoinDataService {
       })
     );
   }
+
+  
+  getCurrentBitcoinPrice() {
+    return this.http.get(this.urlCurrentPrice).pipe(
+      retry(3),
+      catchError(error => {
+        console.error('An error has occurred', error);
+        return of([])
+      })
+    )
+  }
+
+
+  
 }

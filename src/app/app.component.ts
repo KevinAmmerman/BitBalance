@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { Firestore, collection, collectionData, getDocs } from '@angular/fire/firestore';
+import { Firestore } from '@angular/fire/firestore';
 import { RouterOutlet } from '@angular/router';
 import { Observable } from 'rxjs';
 import { HeaderComponent } from './shared/header/header.component';
@@ -9,17 +9,17 @@ import { HeaderComponent } from './shared/header/header.component';
   standalone: true,
   imports: [RouterOutlet, HeaderComponent],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrl: './app.component.scss',
 })
 export class AppComponent {
   title = 'bitbalance';
   firestore = inject(Firestore);
   item$: Observable<any> = new Observable()
 
+  constructor() {
+  }
+
 
   ngOnInit() {
-    const itemCollection = collection(this.firestore, 'test');
-    this.item$ = collectionData(itemCollection);
-    this.item$.subscribe(value => console.log(value))
   }
 }

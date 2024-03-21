@@ -5,20 +5,31 @@
         <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body">
-        <form onsubmit="" [formGroup]="addTransactionForm">
+        <form (ngSubmit)="onSubmit()" [formGroup]="addTransactionForm">
             <div class="input-group mb-3">
                 <span class="input-group-text">₿</span>
-                <input type="text" class="form-control my-form-control-style" aria-label="Bitcoin amount (with dot and two decimal places)" placeholder="Amount of Bitcoin / Sats" formControlName="bitcoin">
+                <input type="number" class="form-control my-form-control-style"
+                    aria-label="Bitcoin amount (with dot and two decimal places)" placeholder="Amount of Bitcoin / Sats"
+                    formControlName="bitcoin">
             </div>
             <div class="input-group mb-3">
                 <span class="input-group-text">€</span>
-                <input type="text" class="form-control my-form-control-style" aria-label="Euro amount (with dot and two decimal places)" placeholder="Cost" formControlName="currency">
+                <input type="number" class="form-control my-form-control-style"
+                    aria-label="Euro amount (with dot and two decimal places)" placeholder="Cost"
+                    formControlName="cost">
+            </div>
+            <div class="mb-3">
+                <select class="form-select" aria-label="Default select example" formControlName="transactionType">
+                    <option selected disabled>Buy / Sell</option>
+                    <option value="buy">Buy</option>
+                    <option value="sell">Sell</option>
+                </select>
             </div>
             <div class="mb-3">
                 <label for="dateOfBirth">Date</label>
                 <div class="input-group">
-                    <input id="dateOfBirth" class="form-control my-form-control-style" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker
-                        #dp="ngbDatepicker" formControlName="date" />
+                    <input id="dateOfBirth" class="form-control my-form-control-style" placeholder="yyyy-mm-dd"
+                        name="dp" ngbDatepicker #dp="ngbDatepicker" formControlName="date" />
                     <button class="btn btn-outline-secondary bi bi-calendar3" (click)="dp.toggle()"
                         type="button"></button>
                 </div>
@@ -26,12 +37,13 @@
             <div class="mb-3">
                 <label for="formGroupExampleInput" class="form-label">Example label</label>
                 <input type="text" class="form-control my-form-control-style" id="formGroupExampleInput"
-                    placeholder="Exchange used to buy Bitcoin"  formControlName="exchange">
+                    placeholder="Exchange used to buy Bitcoin" formControlName="exchange">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="resetForm()">Reset</button>
+                <button type="submit" class="btn btn-outline-dark my-btn-style">Save</button>
             </div>
         </form>
     </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="resetForm()">Reset</button>
-        <button type="button" class="btn btn-outline-dark my-btn-style" (click)="modal.close('Save click')">Save</button>
-    </div>
+    
 </div>

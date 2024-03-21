@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Firestore, addDoc, collection, collectionData, deleteDoc, doc, updateDoc } from '@angular/fire/firestore';
+import { Firestore, addDoc, collection, collectionData, deleteDoc, doc, setDoc, updateDoc } from '@angular/fire/firestore';
 import { of } from 'rxjs';
 
 @Injectable({
@@ -20,9 +20,10 @@ export class FirestoreDataService {
   }
 
 
-  async addDoc(data: any, collID: string) {
+  async addDoc(collID: string, docId: number, data: any) {
     try {
-      const docRef = await addDoc(collection(this.firestore, collID), data)
+      // const docRef = await addDoc(collection(this.firestore, collID, docId), data)
+      await setDoc(doc(this.firestore, collID, `${docId}`), data) 
     } catch (error) {
       console.log(error)
     }

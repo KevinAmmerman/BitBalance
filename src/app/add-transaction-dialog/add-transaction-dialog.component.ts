@@ -27,15 +27,14 @@ export class AddTransactionDialogComponent {
   }
 
   onSubmit() {
-    // try {
-    //   if (this.addTransactionForm.valid) {
-    //     const formData = this.setFormData();
-    //     this.firebaseService.addDoc('test', formData.id, formData)
-    //   }
-    // } catch (error) {
-    //   console.log('Test')
-    // }
-    console.log(this.addTransactionForm)
+    try {
+      if (this.addTransactionForm.valid) {
+        const formData = this.setFormData();
+        this.firebaseService.addDoc('test', formData.id, formData)
+      }
+    } catch (error) {
+      console.log('Test')
+    }
   }
 
 

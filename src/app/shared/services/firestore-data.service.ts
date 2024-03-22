@@ -22,12 +22,10 @@ export class FirestoreDataService {
 
   async addDoc(collID: string, docId: number, data: any) {
     try {
-      // const docRef = await addDoc(collection(this.firestore, collID, docId), data)
       await setDoc(doc(this.firestore, collID, `${docId}`), data) 
     } catch (error) {
       console.log(error)
     }
-
   }
 
 
@@ -48,6 +46,5 @@ export class FirestoreDataService {
     } catch (error) {
 
     }
-
   }
 }

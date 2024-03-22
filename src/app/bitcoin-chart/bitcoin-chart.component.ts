@@ -45,7 +45,7 @@ export class BitcoinChartComponent {
   unsubscribeData: Subscription = new Subscription();
 
   constructor(private bitcoinDataService: BitcoinDataService) {
-    // this.subscribeToData()
+    this.subscribeToData()
   }
 
   subscribeToData() {
@@ -53,6 +53,7 @@ export class BitcoinChartComponent {
       tap(e => console.log(e)),
       map((data: any) => this.formatHistoricalData(data.prices)),
       tap((formtedData: BitcoinHistoricalData[]) => this.initChart(formtedData)),
+      tap((data: BitcoinHistoricalData[]) => data.forEach((data: any) => console.log(new Date(data[0])))),
       tap(e => console.log(e))
     ).subscribe();
   }

@@ -10,10 +10,12 @@ import {
   ApexXAxis,
   ApexYAxis,
   ChartComponent,
-  NgApexchartsModule
+  NgApexchartsModule,
+  ApexGrid
 } from "ng-apexcharts";
-import { Subscription, map, tap } from 'rxjs';
+import { BehaviorSubject, Subscription, catchError, first, map, of, switchMap, tap, timestamp } from 'rxjs';
 import { BitcoinDataService } from '../shared/services/bitcoin-data.service';
+import { FirestoreDataService } from '../shared/services/firestore-data.service';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -24,11 +26,11 @@ export type ChartOptions = {
   xaxis: ApexXAxis;
   tooltip: ApexTooltip;
   colors: any;
+  grid: ApexGrid
 };
 
-interface BitcoinHistoricalData {
-  time: number,
-  price: number
+interface HistoricalDataResponse {
+  prices: [number, number][];
 }
 
 @Component({
@@ -43,28 +45,117 @@ export class BitcoinChartComponent {
   @ViewChild("chart", { static: false }) chart!: ChartComponent;
   public chartOptions: Partial<ChartOptions> | any;
   unsubscribeData: Subscription = new Subscription();
+  unsubscribeDate: Subscription = new Subscription();
 
-  constructor(private bitcoinDataService: BitcoinDataService) {
-    this.subscribeToData()
+  ONE_HOUR_IN_MS = 60 * 60 * 1000;
+  ONE_DAY_IN_MS = 24 * this.ONE_HOUR_IN_MS;
+  ONE_WEEK_IN_MS = 7 * this.ONE_DAY_IN_MS;
+  ONE_MONTH_IN_MS = 30 * this.ONE_DAY_IN_MS;
+  ONE_YEAR_IN_MS = 365 * this.ONE_DAY_IN_MS;
+  OLDEST_TRANSACTION_DATE: number = 0;
+  activeButton: string = '1d';
+  timeframe: BehaviorSubject<number> = new BehaviorSubject(this.ONE_DAY_IN_MS);
+
+  constructor(private bds: BitcoinDataService, private fds: FirestoreDataService) {
+    this.getTransactionDates();
+    this.getDataForChart();
   }
 
-  subscribeToData() {
-    this.unsubscribeData = this.bitcoinDataService.getHistoricalData().pipe(
-      tap(e => console.log(e)),
+  ngOnDestroy() {
+    this.unsubscribeDate.unsubscribe();
+    this.unsubscribeData.unsubscribe();
+  }
+
+
+  getDataForChart() {
+    this.unsubscribeData = this.bds.getHistoricalData().pipe(
       map((data: any) => this.formatHistoricalData(data.prices)),
-      tap((formtedData: BitcoinHistoricalData[]) => this.initChart(formtedData)),
-      tap((data: BitcoinHistoricalData[]) => data.forEach((data: any) => console.log(new Date(data[0])))),
-      tap(e => console.log(e))
-    ).subscribe();
+      switchMap((formattedData: HistoricalDataResponse[]) => this.timeframe.pipe(
+        map((timeframeData: number) => ({ formattedData, timeframeData }))
+      )),
+      map((data: any) => this.filterDataForChart(data)),
+      switchMap((timeframedData: any) => this.fds.getCollection('test').pipe(
+        map(data => this.getFullStack(data)),
+        map((fullStack: number) => ({ timeframedData, fullStack }))
+      )),
+      map(data => this.getStackValue(data)),
+      tap(data => this.initChart(data)),
+      catchError(err => {
+        console.log(err);
+        return of([]);
+      })
+    ).subscribe()
   }
 
-  formatHistoricalData(data: any): BitcoinHistoricalData[] {
-    const limitedData = data.length > 1000 ? data.slice(0, 1000) : data;
-    const formattedData = limitedData.map((d: any) => [d.time * 1000, d.EUR]);
-    return formattedData;
+
+
+  getFullStack(data: any) {
+    return data.reduce((acc: number, d: any) => {
+      if (d.unit === 'sat') {
+        acc += d.amount / 100000000;
+      } else {
+        acc += d.amount;
+      }
+      return acc;
+    }, 0)
   }
 
-  initChart(data: BitcoinHistoricalData[]): void {
+
+  formatHistoricalData(data: any): HistoricalDataResponse[] {
+    return data.map((d: any) => [d.time * 1000, d.EUR]);
+  }
+
+
+  filterDataForChart(dataArray: any) {
+    const jetzt = Date.now();
+    const timeframe = dataArray.timeframeData === this.OLDEST_TRANSACTION_DATE ? this.OLDEST_TRANSACTION_DATE : jetzt - dataArray.timeframeData;
+    return dataArray.formattedData.filter((timestamp: any) => timestamp[0] >= timeframe);
+  }
+
+
+  getTransactionDates() {
+    this.unsubscribeDate = this.fds.getCollection('test').pipe(
+      map((data: any) => data.map((data: any) => data.date)),
+      map(data => this.filterOldestDate(data)),
+      tap(date => this.OLDEST_TRANSACTION_DATE = date),
+      first()
+    ).subscribe()
+  }
+
+
+  filterOldestDate(data: any[]) {
+    const transformedDates = data.map(date => new Date(date.year, date.month - 1, date.day).getTime())
+    return Math.min(...transformedDates);
+  }
+
+
+  getStackValue(data: any) {
+    return data.timeframedData.map((d: any) => [d[0], parseFloat((d[1] * data.fullStack).toFixed(2))])
+  }
+
+
+  setTimeFrame(time: number) {
+    this.timeframe.next(time);
+    switch (time) {
+      case this.ONE_WEEK_IN_MS:
+        this.activeButton = '1w';
+        break;
+      case this.ONE_MONTH_IN_MS:
+        this.activeButton = '1m';
+        break;
+      case this.ONE_YEAR_IN_MS:
+        this.activeButton = '1y';
+        break
+      case this.OLDEST_TRANSACTION_DATE:
+        this.activeButton = 'all';
+        break;
+      default: this.activeButton = '1d';
+        break;
+    }
+  }
+
+  
+  initChart(data: HistoricalDataResponse[]): void {
     this.chartOptions = {
       series: [
         {
@@ -87,12 +178,12 @@ export class BitcoinChartComponent {
           colorStops: [
             {
               offset: 0,
-              color: '#FF9900', 
+              color: '#FF9900',
               opacity: 0.8
             },
             {
               offset: 100,
-              color: '#FF9900', 
+              color: '#FF9900',
               opacity: 0.3
             },
           ]
@@ -100,29 +191,39 @@ export class BitcoinChartComponent {
       },
       xaxis: {
         type: 'datetime',
+        tickPlacement: 'on',
+        axisBorder: {
+          show: false
+        },
+        axisTicks: {
+          show: false
+        },
         labels: {
           datetimeUTC: false,
+          show: false
         }
       },
       tooltip: {
+        theme: 'dark',
         x: {
           format: 'dd.MM.yyyy'
         },
         y: {
-          formatter: function (val: any) {
+          formatter: function (val: string) {
             return val + ' €';
           }
         }
       },
       yaxis: {
-        title: {
-          
-        },
         labels: {
-          formatter: function (val: any) {
-            return (val/ 1000) + 'K' + ' €';
-          }
+          formatter: function (val: number) {
+            return (val / 1000) + 'K' + ' €';
+          },
+          show: false
         }
+      },
+      grid: {
+        show: false
       },
       dataLabels: {
         enabled: false,

@@ -33,6 +33,13 @@
     color: grey;
 }
 
+.my-btn-style.active {
+    background-color: var(--main-color);
+    outline-color: var(--main-color);
+    border-color: var(--main-color);
+    color: white;
+}
+
 .error-border {
     border: 2px solid transparent !important;
     box-shadow: 0 0 5px red;

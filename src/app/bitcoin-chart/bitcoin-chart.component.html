@@ -1,13 +1,12 @@
+<section class="button_container">
+  <button [class.active]="activeButton === '1d'" class="btn btn-outline-primary my-btn-style" (click)="setTimeFrame(ONE_DAY_IN_MS)">1D</button>
+  <button [class.active]="activeButton === '1w'" class="btn btn-outline-primary my-btn-style" (click)="setTimeFrame(ONE_WEEK_IN_MS)">1W</button>
+  <button [class.active]="activeButton === '1m'" class="btn btn-outline-primary my-btn-style" (click)="setTimeFrame(ONE_MONTH_IN_MS)">1M</button>
+  <button [class.active]="activeButton === '1y'" class="btn btn-outline-primary my-btn-style" (click)="setTimeFrame(ONE_YEAR_IN_MS)">1Y</button>
+  <button [class.active]="activeButton === 'all'" class="btn btn-outline-primary my-btn-style" (click)="setTimeFrame(OLDEST_TRANSACTION_DATE)">ALL</button>
+</section>
 @if (this.chartOptions) {
-    <apx-chart
-  #chart
-  [series]="chartOptions.series"
-  [chart]="chartOptions.chart"
-  [xaxis]="chartOptions.xaxis"
-  [yaxis]="chartOptions.yaxis"
-  [tooltip]="chartOptions.tooltip"
-  [dataLabels]="chartOptions.dataLabels"
-  [colors]="chartOptions.colors"
-  [fill]="chartOptions.fill"
-></apx-chart>
+<apx-chart #chart [series]="chartOptions.series" [chart]="chartOptions.chart" [xaxis]="chartOptions.xaxis"
+  [yaxis]="chartOptions.yaxis" [tooltip]="chartOptions.tooltip" [dataLabels]="chartOptions.dataLabels"
+  [colors]="chartOptions.colors" [fill]="chartOptions.fill" [grid]="chartOptions.grid"></apx-chart>
 }

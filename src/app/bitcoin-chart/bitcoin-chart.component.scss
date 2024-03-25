@@ -1,5 +1,10 @@
+.shadow_frame {
+    // box-shadow: rgba(255, 166, 0, 0.476) 0px 0px 15px;
+    border: 2px solid var(--main-color);
+    margin: 2rem;
+    border-radius: 2rem;
+}
+
 .button_container {
-    padding: 1rem 1.4rem;
-    display: flex;
-    gap: 0.5rem;
+    padding: 1.4rem 1.4rem;
 }

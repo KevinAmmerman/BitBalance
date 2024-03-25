@@ -154,7 +154,7 @@ export class BitcoinChartComponent {
     }
   }
 
-  
+
   initChart(data: HistoricalDataResponse[]): void {
     this.chartOptions = {
       series: [
@@ -164,8 +164,11 @@ export class BitcoinChartComponent {
         }
       ],
       chart: {
+        width: '100%',
         height: 350,
-        type: 'area'
+        type: 'area',
+        offsetX: 0,
+        offsetY: 0
       },
       colors: ['#FF9900'],
       fill: {
@@ -183,7 +186,7 @@ export class BitcoinChartComponent {
             },
             {
               offset: 100,
-              color: '#FF9900',
+              color: 'transparent',
               opacity: 0.3
             },
           ]

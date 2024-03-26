@@ -16,6 +16,7 @@ import {
 import { BehaviorSubject, Subscription, catchError, first, map, of, switchMap, tap, timestamp } from 'rxjs';
 import { BitcoinDataService } from '../shared/services/bitcoin-data.service';
 import { FirestoreDataService } from '../shared/services/firestore-data.service';
+import { UtilityService } from '../shared/services/utility.service';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -56,7 +57,7 @@ export class BitcoinChartComponent {
   activeButton: string = '1d';
   timeframe: BehaviorSubject<number> = new BehaviorSubject(this.ONE_DAY_IN_MS);
 
-  constructor(private bds: BitcoinDataService, private fds: FirestoreDataService) {
+  constructor(private bds: BitcoinDataService, private fds: FirestoreDataService, private utility: UtilityService) {
     this.getTransactionDates();
     this.getDataForChart();
   }
@@ -75,29 +76,16 @@ export class BitcoinChartComponent {
       )),
       map((data: any) => this.filterDataForChart(data)),
       switchMap((timeframedData: any) => this.fds.getCollection('test').pipe(
-        map(data => this.getFullStack(data)),
+        map(data => this.utility.getFullStack(data)),
         map((fullStack: number) => ({ timeframedData, fullStack }))
       )),
-      map(data => this.getStackValue(data)),
+      map(data => this.utility.getStackValue(data)),
       tap(data => this.initChart(data)),
       catchError(err => {
         console.log(err);
         return of([]);
       })
     ).subscribe()
-  }
-
-
-
-  getFullStack(data: any) {
-    return data.reduce((acc: number, d: any) => {
-      if (d.unit === 'sat') {
-        acc += d.amount / 100000000;
-      } else {
-        acc += d.amount;
-      }
-      return acc;
-    }, 0)
   }
 
 
@@ -126,11 +114,6 @@ export class BitcoinChartComponent {
   filterOldestDate(data: any[]) {
     const transformedDates = data.map(date => new Date(date.year, date.month - 1, date.day).getTime())
     return Math.min(...transformedDates);
-  }
-
-
-  getStackValue(data: any) {
-    return data.timeframedData.map((d: any) => [d[0], parseFloat((d[1] * data.fullStack).toFixed(2))])
   }
 
 

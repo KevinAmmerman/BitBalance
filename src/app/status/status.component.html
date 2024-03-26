@@ -1,0 +1,29 @@
+@if (combinedData) {
+<section>
+    <div class="card text-bg-dark mb-3 border width" style="max-width: 18rem;">
+        <div class="card-body text_center">
+            <h5 class="card-title">Total Value</h5>
+            <p class="card-text">{{combinedData.stackValue}}€</p>
+        </div>
+    </div>
+    <div class="card text-bg-dark mb-3 border width" style="max-width: 18rem;">
+        <div class="card-body text_center">
+            <h5 class="card-title">Cost Basis</h5>
+            <p class="card-text">{{combinedData.cost}}€</p>
+        </div>
+    </div>
+    <div class="card text-bg-dark mb-3 border width" style="max-width: 18rem;">
+        <div class="card-body text_center">
+            <h5 class="card-title">Unrelized Gains</h5>
+            <p class="card-text">{{combinedData.unrelizedGain}}€</p>
+            <p class="card-text" [ngClass]="combinedData.unrelizedGainInPercent > 0 ? 'positive' : 'negative'">{{combinedData.unrelizedGainInPercent}}%</p>
+        </div>
+    </div>
+    <div class="card text-bg-dark mb-3 border width" style="max-width: 18rem;">
+        <div class="card-body text_center">
+            <h5 class="card-title">Relized Gains</h5>
+            <p class="card-text">Some quick</p>
+        </div>
+    </div>
+</section>
+}

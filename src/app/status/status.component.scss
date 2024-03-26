@@ -1,0 +1,36 @@
+section {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+    margin: 2rem;
+}
+
+.width {
+    flex: 1;
+    min-width: max-content;
+    flex-basis: 100%;
+    max-width: max-content !important;
+}
+
+.border {
+    border: var(--main-border) !important;
+}
+
+.text_center {
+    text-align: center;
+}
+
+.card-body {
+    p {
+        margin: 0;
+        font-weight: bold;
+    }
+}
+
+.positive {
+    color: green;
+}
+
+.negative {
+    color: red;
+}

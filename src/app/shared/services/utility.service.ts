@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Transaction } from '../modules/transaction';
 
 @Injectable({
   providedIn: 'root'
@@ -29,5 +30,20 @@ export class UtilityService {
 
   getStackValue(data: any) {
     return data.timeframedData.map((d: any) => [d[0], parseFloat((d[1] * data.fullStack).toFixed(2))])
+  }
+
+  getDate(data: any) {
+    const date = new Date(data.date.year, data.date.month - 1, data.date.day);
+    return new Intl.DateTimeFormat('de-DE', 
+    {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }
+    ).format(date);
+  }
+
+  getGainOfSingleTransaction() {
+    
   }
 }

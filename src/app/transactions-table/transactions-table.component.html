@@ -1,1 +1,40 @@
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th scope="col">Type</th>
+			<th scope="col">Amount</th>
+			<th scope="col">Cost</th>
+			<th scope="col">Date</th>
+			<th scope="col">Gain</th>
+		</tr>
+	</thead>
+	<tbody>
+        @if (transactionData$ | async; as transactions) {
+            @for (transaction of transactions; track transaction.id) {
+                <tr>
+                    <th scope="row">{{ transaction.transactionType }}</th>
+                    <td>{{ transaction.amount }} {{transaction.unit}}</td>
+                    <td>{{ transaction.cost | number }}€</td>
+                    <td>{{ transaction.date }}</td>
+                </tr>
+            }
+        }
+		
+	</tbody>
+</table>
 
+<!-- <div class="d-flex justify-content-between p-2">
+	<ngb-pagination
+		[collectionSize]="collectionSize"
+		[(page)]="page"
+		[pageSize]="pageSize"
+		(pageChange)="refreshCountries()"
+	>
+	</ngb-pagination>
+
+	<select class="form-select" style="width: auto" [(ngModel)]="pageSize" (ngModelChange)="refreshCountries()">
+		<option [ngValue]="2">2 items per page</option>
+		<option [ngValue]="4">4 items per page</option>
+		<option [ngValue]="6">6 items per page</option>
+	</select>
+</div> -->

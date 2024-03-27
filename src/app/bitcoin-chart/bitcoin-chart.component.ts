@@ -6,14 +6,14 @@ import {
   ApexChart,
   ApexDataLabels,
   ApexFill,
+  ApexGrid,
   ApexTooltip,
   ApexXAxis,
   ApexYAxis,
   ChartComponent,
-  NgApexchartsModule,
-  ApexGrid
+  NgApexchartsModule
 } from "ng-apexcharts";
-import { BehaviorSubject, Subscription, catchError, first, map, of, switchMap, tap, timestamp } from 'rxjs';
+import { BehaviorSubject, Subscription, catchError, first, map, of, switchMap, tap } from 'rxjs';
 import { BitcoinDataService } from '../shared/services/bitcoin-data.service';
 import { FirestoreDataService } from '../shared/services/firestore-data.service';
 import { UtilityService } from '../shared/services/utility.service';

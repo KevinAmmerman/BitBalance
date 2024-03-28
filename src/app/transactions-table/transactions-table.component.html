@@ -6,7 +6,7 @@
                 <th scope="col">Amount</th>
                 <th scope="col">Cost</th>
                 <th scope="col">Date</th>
-                <th scope="col">Gain</th>
+                <th scope="col">Value</th>
             </tr>
         </thead>
         <tbody>
@@ -16,6 +16,7 @@
                 <td>{{ transaction.amount }} {{transaction.unit}}</td>
                 <td>{{ transaction.cost | number }}€</td>
                 <td>{{ transaction.date }}</td>
+                <td [ngClass]="transaction.value > transaction.cost ? 'positive' : 'negative'">{{ transaction.value }}€</td>
             </tr>
             }
         </tbody>
@@ -27,9 +28,9 @@
         </ngb-pagination>
 
         <select class="form-select" style="width: auto" [(ngModel)]="pageSize" (ngModelChange)="refreshTransactions()">
-            <option class="hover_color" [ngValue]="2">2 items per page</option>
-            <option class="hover_color" [ngValue]="4">4 items per page</option>
-            <option class="hover_color" [ngValue]="6">6 items per page</option>
+            <option class="hover_color" [ngValue]="5">5 items per page</option>
+            <option class="hover_color" [ngValue]="10">10 items per page</option>
+            <option class="hover_color" [ngValue]="15">15 items per page</option>
         </select>
     </div>
 </section>

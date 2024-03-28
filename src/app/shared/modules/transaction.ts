@@ -6,4 +6,5 @@ export interface Transaction {
     date: number;
     exchange: string;
     transactionType: string;
+    value: number;
 }

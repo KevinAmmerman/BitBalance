@@ -59,9 +59,9 @@ export class StatusComponent {
 
 
   private getCombinedData(transformedData: TransformedData, bitcoinPrice: any): CombinedData {
-    const stackValue = this.formatNumber(bitcoinPrice.EUR * transformedData.stack, 2);
-    const unrelizedGain = this.formatNumber(stackValue - transformedData.cost, 2);
-    const unrelizedGainInPercent = this.formatNumber((unrelizedGain / transformedData.cost) * 100, 2);
+    const stackValue = this.utility.formatNumber(bitcoinPrice.EUR * transformedData.stack, 2);
+    const unrelizedGain = this.utility.formatNumber(stackValue - transformedData.cost, 2);
+    const unrelizedGainInPercent = this.utility.formatNumber((unrelizedGain / transformedData.cost) * 100, 2);
     return {
       cost: transformedData.cost,
       stackValue: stackValue,
@@ -71,7 +71,5 @@ export class StatusComponent {
   }
 
 
-  private formatNumber(value: number, decimalPlaces: number): number {
-    return parseFloat(value.toFixed(decimalPlaces));
-  }
+  
 }

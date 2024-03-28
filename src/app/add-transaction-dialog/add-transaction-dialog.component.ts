@@ -46,7 +46,8 @@ export class AddTransactionDialogComponent {
       date: this.addTransactionForm.value.date,
       id: new Date().getTime(),
       exchange: this.addTransactionForm.value.exchange,
-      transactionType: this.addTransactionForm.value.transactionType
+      transactionType: this.addTransactionForm.value.transactionType,
+      value: 0
     }
   }
 

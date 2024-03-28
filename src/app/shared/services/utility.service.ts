@@ -32,6 +32,7 @@ export class UtilityService {
     return data.timeframedData.map((d: any) => [d[0], parseFloat((d[1] * data.fullStack).toFixed(2))])
   }
 
+
   getDate(data: any) {
     const date = new Date(data.date.year, data.date.month - 1, data.date.day);
     return new Intl.DateTimeFormat('de-DE', 
@@ -43,7 +44,21 @@ export class UtilityService {
     ).format(date);
   }
 
-  getGainOfSingleTransaction() {
-    
+
+  getCurrentValue(data: Transaction, btcPrice: any) {
+    const formatedAmount = this.getFullStack([data])
+    return this.formatNumber((btcPrice.EUR * formatedAmount), 2);
+  }
+
+
+  transformAmount(data: Transaction) {
+    return Intl.NumberFormat('de-DE').format(
+      data.amount,
+    )
+  }
+
+
+  formatNumber(value: number, decimalPlaces: number): number {
+    return parseFloat(value.toFixed(decimalPlaces));
   }
 }

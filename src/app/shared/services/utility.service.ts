@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Transaction } from '../modules/transaction';
+import { BitcoinPrice } from '../modules/bitcoin-price';
 
 @Injectable({
   providedIn: 'root'
@@ -45,9 +46,9 @@ export class UtilityService {
   }
 
 
-  getCurrentValue(data: Transaction, btcPrice: any) {
+  getCurrentValue(data: Transaction, btcPrice: BitcoinPrice) {
     const formatedAmount = this.getFullStack([data])
-    return this.formatNumber((btcPrice.EUR * formatedAmount), 2);
+    return this.formatNumber((btcPrice['EUR'] * formatedAmount), 2);
   }
 
 

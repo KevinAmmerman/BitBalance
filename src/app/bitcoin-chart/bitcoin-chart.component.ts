@@ -17,6 +17,8 @@ import { BehaviorSubject, Subscription, catchError, first, map, of, switchMap, t
 import { BitcoinDataService } from '../shared/services/bitcoin-data.service';
 import { FirestoreDataService } from '../shared/services/firestore-data.service';
 import { UtilityService } from '../shared/services/utility.service';
+import { Transaction } from '../shared/modules/transaction';
+import { BitcoinTimestampsAndPrices } from '../shared/modules/bitcoin-price';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -30,8 +32,15 @@ export type ChartOptions = {
   grid: ApexGrid
 };
 
-interface HistoricalDataResponse {
-  prices: [number, number][];
+
+interface TransactionDate {
+  [key: string]: number;
+}
+
+interface formattedData {
+  formattedData: any;
+  [index: number]: [number, number];
+  timeframeData: number;
 }
 
 @Component({
@@ -71,48 +80,48 @@ export class BitcoinChartComponent {
   getDataForChart() {
     this.unsubscribeData = this.bds.getHistoricalData().pipe(
       map((data: any) => this.formatHistoricalData(data.prices)),
-      switchMap((formattedData: HistoricalDataResponse[]) => this.timeframe.pipe(
+      switchMap((formattedData: BitcoinTimestampsAndPrices[]) => this.timeframe.pipe(
         map((timeframeData: number) => ({ formattedData, timeframeData }))
       )),
-      map((data: any) => this.filterDataForChart(data)),
-      switchMap((timeframedData: any) => this.fds.getCollection('test').pipe(
+      map((data: formattedData) => this.filterDataForChart(data)),
+      switchMap((timeframedData: formattedData) => this.fds.getCollection('test').pipe(
         map(data => this.utility.getFullStack(data)),
         map((fullStack: number) => ({ timeframedData, fullStack }))
       )),
       map(data => this.utility.getStackValue(data)),
       tap(data => this.initChart(data)),
-      catchError(err => {
-        console.log(err);
+      catchError((err: Error) => {
+        console.log(err.message);
         return of([]);
       })
     ).subscribe()
   }
 
 
-  formatHistoricalData(data: any): HistoricalDataResponse[] {
-    return data.map((d: any) => [d.time * 1000, d.EUR]);
+  formatHistoricalData(data: any): BitcoinTimestampsAndPrices[] {
+    return data.map((d: BitcoinTimestampsAndPrices) => [d.time * 1000, d.EUR]);
   }
 
 
-  filterDataForChart(dataArray: any) {
+  filterDataForChart(dataArray: formattedData) {
     const jetzt = Date.now();
     const timeframe = dataArray.timeframeData === this.OLDEST_TRANSACTION_DATE ? this.OLDEST_TRANSACTION_DATE : jetzt - dataArray.timeframeData;
-    return dataArray.formattedData.filter((timestamp: any) => timestamp[0] >= timeframe);
+    return dataArray.formattedData.filter((timestamp: number[]) => timestamp[0] >= timeframe);
   }
 
 
   getTransactionDates() {
     this.unsubscribeDate = this.fds.getCollection('test').pipe(
-      map((data: any) => data.map((data: any) => data.date)),
-      map(data => this.filterOldestDate(data)),
+      map((data: any) => data.map((data: Transaction) => data.date)),
+      map((data: TransactionDate[]) => this.filterOldestDate(data)),
       tap(date => this.OLDEST_TRANSACTION_DATE = date),
       first()
     ).subscribe()
   }
 
 
-  filterOldestDate(data: any[]) {
-    const transformedDates = data.map(date => new Date(date.year, date.month - 1, date.day).getTime())
+  filterOldestDate(data: TransactionDate[]) {
+    const transformedDates = data.map((date: TransactionDate) => new Date(date['year'], date['month'] - 1, date['day']).getTime())
     return Math.min(...transformedDates);
   }
 
@@ -138,7 +147,7 @@ export class BitcoinChartComponent {
   }
 
 
-  initChart(data: HistoricalDataResponse[]): void {
+  initChart(data: BitcoinTimestampsAndPrices[]): void {
     this.chartOptions = {
       series: [
         {

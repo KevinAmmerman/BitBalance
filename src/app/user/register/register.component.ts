@@ -3,6 +3,7 @@ import { AuthService } from '../../shared/services/auth.service';
 import { Router } from '@angular/router';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UserInterface } from '../../shared/modules/user.interface';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -14,6 +15,7 @@ import { UserInterface } from '../../shared/modules/user.interface';
 export class RegisterComponent {
 
   newUserForm: FormGroup;
+  authSub: Subscription = new Subscription();
 
   constructor(
     private authService: AuthService,
@@ -29,9 +31,14 @@ export class RegisterComponent {
     onSubmit() {
       const rawUserData = this.newUserForm.getRawValue()
       const newUser: UserInterface = {username: rawUserData.username, email: rawUserData.email, password: rawUserData.password}
-      this.authService.register(newUser).subscribe(() => {
+      this.authSub = this.authService.register(newUser).subscribe(() => {
         this.route.navigateByUrl('sign-in');
       });
+    }
+
+
+    ngOnDestroy() {
+      this.authSub.unsubscribe();
     }
 
 }

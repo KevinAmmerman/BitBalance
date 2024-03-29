@@ -3,6 +3,7 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { AuthService } from '../../shared/services/auth.service';
 import { Router } from '@angular/router';
 import { UserInterface } from '../../shared/modules/user.interface';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -15,6 +16,7 @@ import { UserInterface } from '../../shared/modules/user.interface';
 export class LoginComponent {
 
   loginForm: FormGroup;
+  authSub: Subscription = new Subscription();
 
   constructor(
     private authService: AuthService,
@@ -29,10 +31,14 @@ export class LoginComponent {
   onSubmit() {
     const rawUserData = this.loginForm.getRawValue()
     const newUser: UserInterface = {username: rawUserData.username, email: rawUserData.email, password: rawUserData.password}
-    this.authService.login(newUser).subscribe(({
+    this.authSub = this.authService.login(newUser).subscribe(({
       next: () => this.route.navigateByUrl('dashboard'),
       error: (err) => console.log(err)
     }))
+  }
+
+  ngOnDestroy() {
+    this.authSub.unsubscribe();
   }
 
 }

@@ -5,18 +5,18 @@
     </div>
     <div class="d-flex flex-column align-items-center register_window">
         <h1>Sign Up</h1>
-        <form class="d-flex flex-column align-items-center gap-4 w-100">
+        <form (ngSubmit)="onSubmit()" [formGroup]="newUserForm" class="d-flex flex-column align-items-center gap-4 w-100">
             <div class="input_container w-100">
                 <div class="form-floating mb-3">
-                    <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+                    <input formControlName="username" type="email" class="form-control" id="floatingInput" placeholder="name@example.com" [class.error-border]="newUserForm.get('username')?.touched && newUserForm.get('username')?.invalid">
                     <label for="floatingInput">Username</label>
                 </div>
                 <div class="form-floating mb-3">
-                    <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+                    <input formControlName="email" type="email" class="form-control" id="floatingInput" placeholder="name@example.com" [class.error-border]="newUserForm.get('email')?.touched && newUserForm.get('email')?.invalid">
                     <label for="floatingInput">Email address</label>
                 </div>
                 <div class="form-floating">
-                    <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
+                    <input formControlName="password" type="password" class="form-control" id="floatingPassword" placeholder="Password" [class.error-border]="newUserForm.get('password')?.touched && newUserForm.get('password')?.invalid">
                     <label for="floatingPassword">Password</label>
                 </div>
             </div>
@@ -30,7 +30,7 @@
                     </div>
                 </div>
             </div>
-            <button type="submit" class="btn btn-outline-primary my-btn-style">Register</button>
+            <button type="submit" class="btn btn-outline-primary my-btn-style my-btn" [disabled]="!newUserForm.valid">Register</button>
         </form>
     </div>
 </section>

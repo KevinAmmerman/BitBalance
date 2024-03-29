@@ -3,10 +3,6 @@ export interface BitcoinPrice {
 }
 
 
-// export interface BitcoinTimestampsAndPrices {
-//     [key: string]: [time: number, price: number]; 
-// }
-
 export interface BitcoinTimestampsAndPrices {
     EUR: any;
     time: number; 

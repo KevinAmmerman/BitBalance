@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+
 
 @Component({
   selector: 'app-login',
@@ -10,6 +11,13 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 })
 export class LoginComponent {
 
-  constructor() {}
+  loginForm: FormGroup;
+
+  constructor() {
+    this.loginForm = new FormGroup({
+      email: new FormControl ({ value: '', disabled: false }, [Validators.required, Validators.email]),
+      password: new FormControl ({ value: '', disabled: false }, [Validators.required])
+    })
+  }
 
 }

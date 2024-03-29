@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Transaction } from '../modules/transaction';
-import { BitcoinPrice } from '../modules/bitcoin-price';
+import { Transaction } from '../modules/transaction.interface';
+import { BitcoinPrice } from '../modules/bitcoin-price.interface';
 
 @Injectable({
   providedIn: 'root'

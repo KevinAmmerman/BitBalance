@@ -17,8 +17,8 @@ import { BehaviorSubject, Subscription, catchError, first, map, of, switchMap, t
 import { BitcoinDataService } from '../shared/services/bitcoin-data.service';
 import { FirestoreDataService } from '../shared/services/firestore-data.service';
 import { UtilityService } from '../shared/services/utility.service';
-import { Transaction } from '../shared/modules/transaction';
-import { BitcoinTimestampsAndPrices } from '../shared/modules/bitcoin-price';
+import { Transaction } from '../shared/modules/transaction.interface';
+import { BitcoinTimestampsAndPrices } from '../shared/modules/bitcoin-price.interface';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;

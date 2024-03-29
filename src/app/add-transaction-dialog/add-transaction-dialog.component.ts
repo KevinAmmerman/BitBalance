@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgbActiveModal, NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
-import { Transaction } from '../shared/modules/transaction';
+import { Transaction } from '../shared/modules/transaction.interface';
 import { FirestoreDataService } from '../shared/services/firestore-data.service';
 
 @Component({

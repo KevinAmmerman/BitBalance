@@ -3,11 +3,11 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgbPaginationModule, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription, catchError, combineLatest, map, of, tap } from 'rxjs';
-import { Transaction } from '../shared/modules/transaction';
+import { Transaction } from '../shared/modules/transaction.interface';
 import { FirestoreDataService } from '../shared/services/firestore-data.service';
 import { UtilityService } from '../shared/services/utility.service';
 import { BitcoinDataService } from '../shared/services/bitcoin-data.service';
-import { BitcoinPrice } from '../shared/modules/bitcoin-price';
+import { BitcoinPrice } from '../shared/modules/bitcoin-price.interface';
 
 @Component({
 	selector: 'app-transactions-table',

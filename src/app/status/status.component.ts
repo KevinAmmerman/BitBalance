@@ -3,7 +3,7 @@ import { Observable, Subscription, combineLatest, map, tap } from 'rxjs';
 import { BitcoinDataService } from '../shared/services/bitcoin-data.service';
 import { FirestoreDataService } from '../shared/services/firestore-data.service';
 import { UtilityService } from '../shared/services/utility.service';
-import { Transaction } from '../shared/modules/transaction';
+import { Transaction } from '../shared/modules/transaction.interface';
 import { CommonModule } from '@angular/common';
 
 interface TransformedData {

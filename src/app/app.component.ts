@@ -1,7 +1,5 @@
-import { Component, inject } from '@angular/core';
-import { Firestore } from '@angular/fire/firestore';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { Observable } from 'rxjs';
 import { HeaderComponent } from './shared/header/header.component';
 
 @Component({
@@ -13,8 +11,6 @@ import { HeaderComponent } from './shared/header/header.component';
 })
 export class AppComponent {
   title = 'bitbalance';
-  firestore = inject(Firestore);
-  item$: Observable<any> = new Observable()
 
   constructor() {
   }

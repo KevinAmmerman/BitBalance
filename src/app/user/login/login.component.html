@@ -1,16 +1,23 @@
-<section>
-    <div>
-        <form>
-            <div class="form-floating mb-3">
-                <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
-                <label for="floatingInput">Email address</label>
-            </div>
-            <div class="form-floating">
-                <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
-                <label for="floatingPassword">Password</label>
+<section class="d-flex justify-content-center align-items-center">
+    <div class="register d-flex gap-4 align-items-center">
+        <span>No Account? Sign up here.</span>
+        <button class="btn btn-outline-primary my-btn-style">Sign Up</button>
+    </div>
+    <div class="d-flex flex-column align-items-center login_window">
+        <h1>Sign In</h1>
+        <form class="d-flex flex-column align-items-center gap-4">
+            <div class="input_container w-100">
+                <div class="form-floating mb-3">
+                    <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+                    <label for="floatingInput">Email address</label>
+                </div>
+                <div class="form-floating">
+                    <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
+                    <label for="floatingPassword">Password</label>
+                </div>
             </div>
             <div class="row mb-3">
-                <div class="col-sm-10 offset-sm-2">
+                <div>
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="gridCheck1">
                         <label class="form-check-label" for="gridCheck1">
@@ -19,7 +26,15 @@
                     </div>
                 </div>
             </div>
-            <button type="submit" class="btn btn-outline-primary my-btn-style">Sign in</button> 
+            <button type="submit" class="btn btn-outline-primary my-btn-style">Login</button>
+            <div class="line"></div>
+            <div class="individual_login d-flex flex-column gap-3">
+                <span>Or login with</span>
+                <div class="login_btn_box d-flex gap-4">
+                    <button class="btn btn-outline-primary my-btn-style d-flex align-items-center justify-content-center gap"><img class="login_logo" src="../../../assets/img/google.png" alt="google logo">Google</button>
+                    <button class="btn btn-outline-primary my-btn-style d-flex align-items-center justify-content-center gap"><img class="login_logo" src="../../../assets/img/apple-logo.png" alt="apple logo">Apple</button>
+                </div>
+            </div>
         </form>
     </div>
 </section>

@@ -1,6 +1,7 @@
-import { AuthGuard, redirectUnauthorizedTo } from '@angular/fire/auth-guard';
+import { redirectUnauthorizedTo } from '@angular/fire/compat/auth-guard';
 import { Routes } from '@angular/router';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { authGuard } from './shared/guards/auth.guard';
 import { LoginComponent } from './user/login/login.component';
 import { RegisterComponent } from './user/register/register.component';
 
@@ -11,8 +12,7 @@ export const routes: Routes = [
     { path: 'sign-in', component: LoginComponent },
     {
         path: 'dashboard', component: DashboardComponent,
-        canActivate: [AuthGuard],
-        data: { authGuardPipe: redirectToLogin }
+        canActivate: [authGuard]
     },
     { path: 'sign-up', component: RegisterComponent }
 ];

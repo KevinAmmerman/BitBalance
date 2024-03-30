@@ -28,13 +28,12 @@
             </div>
             <button type="submit" class="btn btn-outline-primary my-btn-style">Login</button>
             <div class="line"></div>
-            <div class="individual_login d-flex flex-column gap-3">
-                <span>Or login with</span>
-                <div class="login_btn_box d-flex gap-4">
-                    <button class="btn btn-outline-primary my-btn-style d-flex align-items-center justify-content-center gap"><img class="login_logo" src="../../../assets/img/google.png" alt="google logo">Google</button>
-                    <button class="btn btn-outline-primary my-btn-style d-flex align-items-center justify-content-center gap"><img class="login_logo" src="../../../assets/img/apple-logo.png" alt="apple logo">Apple</button>
-                </div>
-            </div>
         </form>
+        <div class="individual_login d-flex flex-column gap-3 p-3">
+            <span>Or login with</span>
+            <div class="login_btn_box d-flex gap-4">
+                <button (click)="googleSsoLogin()" class="btn btn-outline-primary my-btn-style d-flex align-items-center justify-content-center gap"><img class="login_logo" src="../../../assets/img/google.png" alt="google logo">Google</button>
+            </div>
+        </div>
     </div>
 </section>

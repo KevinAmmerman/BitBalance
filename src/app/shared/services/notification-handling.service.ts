@@ -1,12 +1,17 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 
+interface Notification {
+  message: string;
+  type: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class NotificationHandlingService {
 
-  message$: Subject<string> = new Subject()
+  message$: Subject<Notification> = new Subject()
 
   constructor() { }
 
@@ -14,7 +19,13 @@ export class NotificationHandlingService {
     return this.message$.asObservable();
   }
 
-  get submitNotificationMessage() {
-    return this.message$;
+
+  error(message: string) {
+    this.message$.next({message: message, type: 'warning'});
+  }
+
+
+  success(message: string) {
+    this.message$.next({message: message, type: 'success'});
   }
 }

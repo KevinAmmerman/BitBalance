@@ -38,7 +38,9 @@ export class StatusComponent {
     private bds: BitcoinDataService, 
     private authService: AuthService
     ) {
-    this.unsubscribeCurrentUserData = authService.currentUser.subscribe((user: any) => this.getData(user.uid));
+    this.unsubscribeCurrentUserData = authService.currentUser.subscribe((user: any) => {
+      if(user) this.getData(user.uid)
+    });
   }
 
 

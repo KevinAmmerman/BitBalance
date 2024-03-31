@@ -13,14 +13,18 @@ import { NotificationHandlingService } from '../services/notification-handling.s
 })
 export class NotificationComponent {
 
-  @ViewChild('selfClosingAlert', { static: false }) selfClosingAlert: NgbAlert | undefined;
+  @ViewChild('selfClosingAlert', { static: false }) selfClosingAlert: NgbAlert | any;
   unsubscribeNotification: Subscription = new Subscription();
   noteMessage: string = '';
+  type: string = '';
 
   constructor(private notificationService: NotificationHandlingService) {
     this.unsubscribeNotification = notificationService.getNotificationMessage.pipe(
       takeUntilDestroyed(),
-      tap(message => this.noteMessage = message),
+      tap(message => {
+        this.noteMessage = message.message;
+        this.type = message.type;
+      }),
       debounceTime(5000)
     ).subscribe(() => this.selfClosingAlert?.close())
   }

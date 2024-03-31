@@ -40,10 +40,11 @@ export class AddTransactionDialogComponent {
       if (this.addTransactionForm.valid) {
         const formData = this.setFormData();
         this.firebaseService.addDoc(this.collectionId, formData.id, formData);
-        this.notificationService.submitNotificationMessage.next('Transaction successfuly added.')
+        this.notificationService.success('Transaction successfully added.');
+        this.modal.close();
       }
     } catch (error) {
-      console.log('Test')
+      this.notificationService.error(`Something went wrong! ${error}`);
     }
   }
 

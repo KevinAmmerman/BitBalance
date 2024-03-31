@@ -38,7 +38,6 @@ export class LoginComponent {
       next: () => this.router.navigateByUrl('dashboard'),
       error: (err) => console.log(err)
     }))
-    
   }
 
   ngOnDestroy() {

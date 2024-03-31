@@ -34,7 +34,9 @@ export class TransactionsTableComponent {
 		private bitcoinDataService: BitcoinDataService,
 		private authService: AuthService
 	) {
-		this.unsubscribeCurrentUserData = authService.currentUser.subscribe((user: any) => this.getDataForTable(user.uid));
+		this.unsubscribeCurrentUserData = authService.currentUser.subscribe((user: any) => {
+			if(user) this.getDataForTable(user.uid)
+		});
 	}
 
 

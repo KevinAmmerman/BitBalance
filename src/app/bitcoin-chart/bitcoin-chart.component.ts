@@ -71,7 +71,9 @@ export class BitcoinChartComponent {
 
   constructor(private bds: BitcoinDataService, private fds: FirestoreDataService, private utility: UtilityService, private auth: Auth, private authService: AuthService) {
     this.getTransactionDates();
-    this.unsubscribeCurrentUserData = authService.currentUser.subscribe((user: any) => this.getDataForChart(user.uid));
+    this.unsubscribeCurrentUserData = authService.currentUser.subscribe((user: any) => {
+      if(user) this.getDataForChart(user.uid);
+    });
   }
 
   ngOnDestroy() {

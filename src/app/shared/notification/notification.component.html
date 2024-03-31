@@ -1,0 +1,3 @@
+@if (noteMessage) {
+	<ngb-alert class="alert" #selfClosingAlert type="warning" (closed)="noteMessage = ''">{{ noteMessage }}</ngb-alert>
+}

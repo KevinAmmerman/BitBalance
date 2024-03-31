@@ -1,8 +1,6 @@
 import { Component } from '@angular/core';
-import { Auth } from '@angular/fire/auth';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './shared/header/header.component';
-import { AuthService } from './shared/services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -14,16 +12,5 @@ import { AuthService } from './shared/services/auth.service';
 export class AppComponent {
   title = 'bitbalance';
 
-  constructor(private auth: Auth, private authService: AuthService) {
-    
-  }
-
-
-  async ngOnInit() {
-
-  }
-
-  ngOnDestroy() {
-    console.log('main component')
-  }
+  constructor() {}
 }

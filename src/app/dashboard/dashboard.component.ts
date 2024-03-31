@@ -5,11 +5,12 @@ import { AddTransactionDialogComponent } from '../add-transaction-dialog/add-tra
 import { StatusComponent } from '../status/status.component';
 import { TransactionsTableComponent } from '../transactions-table/transactions-table.component';
 import { HeaderComponent } from '../shared/header/header.component';
+import { NotificationComponent } from '../shared/notification/notification.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [BitcoinChartComponent, StatusComponent, TransactionsTableComponent, HeaderComponent],
+  imports: [BitcoinChartComponent, StatusComponent, TransactionsTableComponent, HeaderComponent, NotificationComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })

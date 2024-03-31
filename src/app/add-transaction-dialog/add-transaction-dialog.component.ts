@@ -4,6 +4,7 @@ import { NgbActiveModal, NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap'
 import { Transaction } from '../shared/modules/transaction.interface';
 import { FirestoreDataService } from '../shared/services/firestore-data.service';
 import { Auth } from '@angular/fire/auth';
+import { NotificationHandlingService } from '../shared/services/notification-handling.service';
 
 @Component({
   selector: 'app-add-transaction-dialog',
@@ -17,7 +18,12 @@ export class AddTransactionDialogComponent {
   addTransactionForm: FormGroup;
   collectionId: string;
 
-  constructor(public modal: NgbActiveModal, private firebaseService: FirestoreDataService, private auth: Auth) {
+  constructor(
+    public modal: NgbActiveModal, 
+    private firebaseService: FirestoreDataService, 
+    private auth: Auth,
+    private notificationService: NotificationHandlingService
+    ) {
     this.collectionId = auth.currentUser!.uid;
     this.addTransactionForm = new FormGroup({
       bitcoin: new FormControl({ value: '', disabled: false }, [Validators.required]),
@@ -33,7 +39,8 @@ export class AddTransactionDialogComponent {
     try {
       if (this.addTransactionForm.valid) {
         const formData = this.setFormData();
-        this.firebaseService.addDoc(this.collectionId, formData.id, formData)
+        this.firebaseService.addDoc(this.collectionId, formData.id, formData);
+        this.notificationService.submitNotificationMessage.next('Transaction successfuly added.')
       }
     } catch (error) {
       console.log('Test')

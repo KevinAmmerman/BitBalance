@@ -1,0 +1,11 @@
+.alert {
+    position: fixed;
+    max-width: 500px;
+    right: 0;
+    left: 0;
+    margin: auto;
+    top: 80%;
+    transform: translate3d(0, -50%, 0);
+    text-align: center;
+    z-index: 9999;
+}

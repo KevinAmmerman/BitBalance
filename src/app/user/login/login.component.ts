@@ -18,25 +18,27 @@ export class LoginComponent {
 
   loginForm: FormGroup;
   authSub: Subscription = new Subscription();
-  auth = inject(Auth)
 
   constructor(
     private authService: AuthService,
-    private route: Router
+    private router: Router,
+    private auth: Auth
   ) {
     this.loginForm = new FormGroup({
       email: new FormControl({ value: '', disabled: false }, [Validators.required, Validators.email]),
       password: new FormControl({ value: '', disabled: false }, [Validators.required])
     })
+    
   }
 
   onSubmit() {
     const rawUserData = this.loginForm.getRawValue()
     const newUser: UserInterface = { username: rawUserData.username, email: rawUserData.email, password: rawUserData.password }
     this.authSub = this.authService.login(newUser).subscribe(({
-      next: () => this.route.navigateByUrl('dashboard'),
+      next: () => this.router.navigateByUrl('dashboard'),
       error: (err) => console.log(err)
     }))
+    
   }
 
   ngOnDestroy() {
@@ -44,8 +46,9 @@ export class LoginComponent {
   }
 
   googleSsoLogin() {
-    signInWithPopup(this.auth, new GoogleAuthProvider())
-      .then(user => this.route.navigateByUrl('dashboard'))
-      .catch((err: Error) => console.log(err.message));
+    this.authService.googleSsoLogin().subscribe({
+      next: () => this.router.navigateByUrl('dashboard'),
+      error: (err: Error) => console.log(err.message) 
+    })
   }
 }

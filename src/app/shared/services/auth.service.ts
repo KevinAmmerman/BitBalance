@@ -1,7 +1,8 @@
 import { Injectable, inject } from '@angular/core';
-import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updateProfile } from '@angular/fire/auth';
+import { Auth, GoogleAuthProvider, UserCredential, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile } from '@angular/fire/auth';
+import { Router } from '@angular/router';
+import { BehaviorSubject, Observable, Subject, from } from 'rxjs';
 import { UserInterface } from '../modules/user.interface';
-import { Observable, from } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -9,25 +10,43 @@ import { Observable, from } from 'rxjs';
 export class AuthService {
 
   firebaseAuth = inject(Auth)
+  router = inject(Router)
+  userData: any;
+  user$: BehaviorSubject<any> = new BehaviorSubject('') 
 
-  constructor() { }
+  constructor() {
+    onAuthStateChanged(this.firebaseAuth, user => {
+      if (user) this.user$.next(user);
+    })
+  }
 
   register(user: UserInterface): Observable<void> {
-    const promise = createUserWithEmailAndPassword(this.firebaseAuth, user.email, user.password).then((response) => 
-    updateProfile(response.user, { displayName: user.username }));
+    const promise = createUserWithEmailAndPassword(this.firebaseAuth, user.email, user.password).then((response) =>
+      updateProfile(response.user, { displayName: user.username }));
     return from(promise);
   }
 
 
   login(user: UserInterface): Observable<void> {
     const promise = signInWithEmailAndPassword(this.firebaseAuth, user.email, user.password)
-    .then(() => {});
+      .then(() => {});
     return from(promise);
   }
 
 
-  logout(): Observable<void>  {
+  googleSsoLogin(): Observable<void> {
+    const promise = signInWithPopup(this.firebaseAuth, new GoogleAuthProvider())
+      .then(() => { });
+    return from(promise);
+  }
+
+
+  logout(): Observable<void> {
     const promise = signOut(this.firebaseAuth);
     return from(promise);
+  }
+
+  get currentUser(): Observable<string> {
+    return this.user$.asObservable();
   }
 }

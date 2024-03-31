@@ -1,10 +1,11 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { Observable, Subscription, combineLatest, map, tap } from 'rxjs';
+import { Subscription, combineLatest, map } from 'rxjs';
+import { Transaction } from '../shared/modules/transaction.interface';
+import { AuthService } from '../shared/services/auth.service';
 import { BitcoinDataService } from '../shared/services/bitcoin-data.service';
 import { FirestoreDataService } from '../shared/services/firestore-data.service';
 import { UtilityService } from '../shared/services/utility.service';
-import { Transaction } from '../shared/modules/transaction.interface';
-import { CommonModule } from '@angular/common';
 
 interface TransformedData {
   cost: number;
@@ -30,13 +31,18 @@ export class StatusComponent {
   userDataSubscription: Subscription = new Subscription();
   combinedData: CombinedData | any;
 
-  constructor(private fsd: FirestoreDataService, private utility: UtilityService, private bds: BitcoinDataService) {
-
+  constructor(
+    private fsd: FirestoreDataService, 
+    private utility: UtilityService, 
+    private bds: BitcoinDataService, 
+    private authService: AuthService
+    ) {
+    authService.currentUser.subscribe((user: any) => this.getData(user.uid));
   }
 
 
-  ngOnInit() {
-    this.userDataSubscription = combineLatest([this.fsd.getCollection('test').pipe(
+  getData(uid: string) {
+    this.userDataSubscription = combineLatest([this.fsd.getCollection(uid).pipe(
       map((data: any[]) => this.getTransformedData(data))
     ), this.bds.getCurrentBitcoinPrice()]).pipe(
       map(([transformedData, bitcoinPrice]) => this.getCombinedData(transformedData, bitcoinPrice)),

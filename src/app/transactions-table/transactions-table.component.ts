@@ -3,11 +3,12 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgbPaginationModule, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription, catchError, combineLatest, map, of, tap } from 'rxjs';
+import { BitcoinPrice } from '../shared/modules/bitcoin-price.interface';
 import { Transaction } from '../shared/modules/transaction.interface';
+import { AuthService } from '../shared/services/auth.service';
+import { BitcoinDataService } from '../shared/services/bitcoin-data.service';
 import { FirestoreDataService } from '../shared/services/firestore-data.service';
 import { UtilityService } from '../shared/services/utility.service';
-import { BitcoinDataService } from '../shared/services/bitcoin-data.service';
-import { BitcoinPrice } from '../shared/modules/bitcoin-price.interface';
 
 @Component({
 	selector: 'app-transactions-table',
@@ -29,9 +30,10 @@ export class TransactionsTableComponent {
 	constructor(
 		private firestoreDataService: FirestoreDataService,
 		private utilityService: UtilityService,
-		private bitcoinDataService: BitcoinDataService
+		private bitcoinDataService: BitcoinDataService,
+		private authService: AuthService
 	) {
-		this.getDataForTable()
+		authService.currentUser.subscribe((user: any) => this.getDataForTable(user.uid));
 	}
 
 
@@ -40,9 +42,9 @@ export class TransactionsTableComponent {
 	}
 
 
-	getDataForTable() {
+	getDataForTable(uid: string) {
 		this.transactionDataSub = combineLatest([
-			this.firestoreDataService.getCollection('test'),
+			this.firestoreDataService.getCollection(uid),
 			this.bitcoinDataService.getCurrentBitcoinPrice()
 		]).pipe(
 			map(([transactionData, bitcoinPrice]) => transactionData.map((transaction: any) => ({

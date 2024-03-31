@@ -19,6 +19,8 @@ import { FirestoreDataService } from '../shared/services/firestore-data.service'
 import { UtilityService } from '../shared/services/utility.service';
 import { Transaction } from '../shared/modules/transaction.interface';
 import { BitcoinTimestampsAndPrices } from '../shared/modules/bitcoin-price.interface';
+import { Auth } from '@angular/fire/auth';
+import { AuthService } from '../shared/services/auth.service';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -66,9 +68,9 @@ export class BitcoinChartComponent {
   activeButton: string = '1d';
   timeframe: BehaviorSubject<number> = new BehaviorSubject(this.ONE_DAY_IN_MS);
 
-  constructor(private bds: BitcoinDataService, private fds: FirestoreDataService, private utility: UtilityService) {
+  constructor(private bds: BitcoinDataService, private fds: FirestoreDataService, private utility: UtilityService, private auth: Auth, private authService: AuthService) {
     this.getTransactionDates();
-    this.getDataForChart();
+    authService.currentUser.subscribe((user: any) => this.getDataForChart(user.uid));
   }
 
   ngOnDestroy() {
@@ -77,14 +79,14 @@ export class BitcoinChartComponent {
   }
 
 
-  getDataForChart() {
+  getDataForChart(uid: string) {
     this.unsubscribeData = this.bds.getHistoricalData().pipe(
       map((data: any) => this.formatHistoricalData(data.prices)),
       switchMap((formattedData: BitcoinTimestampsAndPrices[]) => this.timeframe.pipe(
         map((timeframeData: number) => ({ formattedData, timeframeData }))
       )),
       map((data: formattedData) => this.filterDataForChart(data)),
-      switchMap((timeframedData: formattedData) => this.fds.getCollection('test').pipe(
+      switchMap((timeframedData: formattedData) => this.fds.getCollection(uid).pipe(
         map(data => this.utility.getFullStack(data)),
         map((fullStack: number) => ({ timeframedData, fullStack }))
       )),

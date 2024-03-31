@@ -28,7 +28,8 @@ interface CombinedData {
 })
 export class StatusComponent {
 
-  userDataSubscription: Subscription = new Subscription();
+  unsubscribeUserData: Subscription = new Subscription();
+  unsubscribeCurrentUserData: Subscription = new Subscription();
   combinedData: CombinedData | any;
 
   constructor(
@@ -37,12 +38,12 @@ export class StatusComponent {
     private bds: BitcoinDataService, 
     private authService: AuthService
     ) {
-    authService.currentUser.subscribe((user: any) => this.getData(user.uid));
+    this.unsubscribeCurrentUserData = authService.currentUser.subscribe((user: any) => this.getData(user.uid));
   }
 
 
   getData(uid: string) {
-    this.userDataSubscription = combineLatest([this.fsd.getCollection(uid).pipe(
+    this.unsubscribeUserData = combineLatest([this.fsd.getCollection(uid).pipe(
       map((data: any[]) => this.getTransformedData(data))
     ), this.bds.getCurrentBitcoinPrice()]).pipe(
       map(([transformedData, bitcoinPrice]) => this.getCombinedData(transformedData, bitcoinPrice)),
@@ -51,7 +52,8 @@ export class StatusComponent {
 
 
   ngOnDestroy() {
-    this.userDataSubscription.unsubscribe();
+    this.unsubscribeUserData.unsubscribe();
+    this.unsubscribeCurrentUserData.unsubscribe();
   }
 
 

@@ -67,15 +67,17 @@ export class BitcoinChartComponent {
   OLDEST_TRANSACTION_DATE: number = 0;
   activeButton: string = '1d';
   timeframe: BehaviorSubject<number> = new BehaviorSubject(this.ONE_DAY_IN_MS);
+  unsubscribeCurrentUserData: Subscription = new Subscription();
 
   constructor(private bds: BitcoinDataService, private fds: FirestoreDataService, private utility: UtilityService, private auth: Auth, private authService: AuthService) {
     this.getTransactionDates();
-    authService.currentUser.subscribe((user: any) => this.getDataForChart(user.uid));
+    this.unsubscribeCurrentUserData = authService.currentUser.subscribe((user: any) => this.getDataForChart(user.uid));
   }
 
   ngOnDestroy() {
     this.unsubscribeDate.unsubscribe();
     this.unsubscribeData.unsubscribe();
+    this.unsubscribeCurrentUserData.unsubscribe();
   }
 
 

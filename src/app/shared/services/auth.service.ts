@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
-import { Auth, GoogleAuthProvider, UserCredential, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile } from '@angular/fire/auth';
+import { Auth, GoogleAuthProvider, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile } from '@angular/fire/auth';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, Subject, from } from 'rxjs';
+import { BehaviorSubject, Observable, from } from 'rxjs';
 import { UserInterface } from '../modules/user.interface';
 
 @Injectable({
@@ -45,6 +45,7 @@ export class AuthService {
     const promise = signOut(this.firebaseAuth);
     return from(promise);
   }
+  
 
   get currentUser(): Observable<string> {
     return this.user$.asObservable();

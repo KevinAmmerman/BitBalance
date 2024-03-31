@@ -25,7 +25,8 @@ export class TransactionsTableComponent {
 	collectionSize: number = 0;
 
 	transactionData: Transaction[] = [];
-	transactionDataSub: Subscription = new Subscription();
+	unsubscribeTransactionData: Subscription = new Subscription();
+	unsubscribeCurrentUserData: Subscription = new Subscription();
 
 	constructor(
 		private firestoreDataService: FirestoreDataService,
@@ -33,17 +34,18 @@ export class TransactionsTableComponent {
 		private bitcoinDataService: BitcoinDataService,
 		private authService: AuthService
 	) {
-		authService.currentUser.subscribe((user: any) => this.getDataForTable(user.uid));
+		this.unsubscribeCurrentUserData = authService.currentUser.subscribe((user: any) => this.getDataForTable(user.uid));
 	}
 
 
 	ngOnDestroy() {
-		this.transactionDataSub.unsubscribe();
+		this.unsubscribeTransactionData.unsubscribe();
+		this.unsubscribeCurrentUserData.unsubscribe();
 	}
 
 
 	getDataForTable(uid: string) {
-		this.transactionDataSub = combineLatest([
+		this.unsubscribeTransactionData = combineLatest([
 			this.firestoreDataService.getCollection(uid),
 			this.bitcoinDataService.getCurrentBitcoinPrice()
 		]).pipe(

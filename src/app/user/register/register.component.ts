@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UserInterface } from '../../shared/modules/user.interface';
 import { Subscription } from 'rxjs';
+import { NotificationHandlingService } from '../../shared/services/notification-handling.service';
 
 @Component({
   selector: 'app-register',
@@ -15,11 +16,12 @@ import { Subscription } from 'rxjs';
 export class RegisterComponent {
 
   newUserForm: FormGroup;
-  authSub: Subscription = new Subscription();
+  unsubscribeAuth: Subscription = new Subscription();
 
   constructor(
     private authService: AuthService,
-    private route: Router
+    private route: Router,
+    private notificationService: NotificationHandlingService
     ) {
       this.newUserForm = new FormGroup({
         username: new FormControl({ value: '', disabled: false }, [Validators.required]),
@@ -31,14 +33,15 @@ export class RegisterComponent {
     onSubmit() {
       const rawUserData = this.newUserForm.getRawValue()
       const newUser: UserInterface = {username: rawUserData.username, email: rawUserData.email, password: rawUserData.password}
-      this.authSub = this.authService.register(newUser).subscribe(() => {
-        this.route.navigateByUrl('sign-in');
+      this.unsubscribeAuth = this.authService.register(newUser).subscribe({
+        next: () =>this.route.navigateByUrl('sign-in'),
+        error: (err: Error) => this.notificationService.error(`Something went wrong! ${err.message}`)
       });
     }
 
 
     ngOnDestroy() {
-      this.authSub.unsubscribe();
+      this.unsubscribeAuth.unsubscribe();
     }
 
 }

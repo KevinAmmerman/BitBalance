@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { Subscription, combineLatest, map } from 'rxjs';
+import { Subscription, catchError, combineLatest, map, of } from 'rxjs';
 import { Transaction } from '../shared/modules/transaction.interface';
 import { AuthService } from '../shared/services/auth.service';
 import { BitcoinDataService } from '../shared/services/bitcoin-data.service';
 import { FirestoreDataService } from '../shared/services/firestore-data.service';
 import { UtilityService } from '../shared/services/utility.service';
+import { NotificationHandlingService } from '../shared/services/notification-handling.service';
 
 interface TransformedData {
   cost: number;
@@ -36,9 +37,15 @@ export class StatusComponent {
     private fsd: FirestoreDataService, 
     private utility: UtilityService, 
     private bds: BitcoinDataService, 
-    private authService: AuthService
+    private authService: AuthService,
+    private notificationService: NotificationHandlingService
     ) {
-    this.unsubscribeCurrentUserData = authService.currentUser.subscribe((user: any) => {
+    this.unsubscribeCurrentUserData = authService.currentUser.pipe(
+      catchError((err: Error) => {
+        this.notificationService.error(`Something went wrong! ${err.message}`);
+        return of([]);
+      })
+    ).subscribe((user: any) => {
       if(user) this.getData(user.uid)
     });
   }
@@ -49,7 +56,11 @@ export class StatusComponent {
       map((data: any[]) => this.getTransformedData(data))
     ), this.bds.getCurrentBitcoinPrice()]).pipe(
       map(([transformedData, bitcoinPrice]) => this.getCombinedData(transformedData, bitcoinPrice)),
-    ).subscribe((combinedData: CombinedData) => this.combinedData = combinedData);
+      catchError((err: Error) => {
+        this.notificationService.error(`Something went wrong! ${err.message}`);
+        return of([]);
+      })
+    ).subscribe((combinedData: CombinedData | never[]) => this.combinedData = combinedData);
   }
 
 
@@ -79,7 +90,4 @@ export class StatusComponent {
       unrelizedGainInPercent: unrelizedGainInPercent
     };
   }
-
-
-  
 }

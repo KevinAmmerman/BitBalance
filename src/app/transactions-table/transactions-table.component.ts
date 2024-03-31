@@ -9,6 +9,7 @@ import { AuthService } from '../shared/services/auth.service';
 import { BitcoinDataService } from '../shared/services/bitcoin-data.service';
 import { FirestoreDataService } from '../shared/services/firestore-data.service';
 import { UtilityService } from '../shared/services/utility.service';
+import { NotificationHandlingService } from '../shared/services/notification-handling.service';
 
 @Component({
 	selector: 'app-transactions-table',
@@ -32,9 +33,15 @@ export class TransactionsTableComponent {
 		private firestoreDataService: FirestoreDataService,
 		private utilityService: UtilityService,
 		private bitcoinDataService: BitcoinDataService,
-		private authService: AuthService
+		private authService: AuthService,
+		private notificationService: NotificationHandlingService
 	) {
-		this.unsubscribeCurrentUserData = authService.currentUser.subscribe((user: any) => {
+		this.unsubscribeCurrentUserData = authService.currentUser.pipe(
+			catchError((err: Error) => {
+				this.notificationService.error(`Something went wrong! ${err.message}`);
+				return of([])
+			})
+		).subscribe((user: any) => {
 			if(user) this.getDataForTable(user.uid)
 		});
 	}
@@ -63,7 +70,7 @@ export class TransactionsTableComponent {
 				this.refreshTransactions();
 			}),
 			catchError((err: Error) => {
-				console.log(err.message);
+				this.notificationService.error(`Something went wrong! ${err.message}`);
 				return of([]);
 			})
 		).subscribe()

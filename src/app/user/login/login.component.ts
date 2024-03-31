@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { UserInterface } from '../../shared/modules/user.interface';
 import { Subscription } from 'rxjs';
 import { Auth, FacebookAuthProvider, GithubAuthProvider, GoogleAuthProvider, OAuthProvider, signInWithPopup } from '@angular/fire/auth';
+import { NotificationHandlingService } from '../../shared/services/notification-handling.service';
 
 
 @Component({
@@ -17,12 +18,14 @@ import { Auth, FacebookAuthProvider, GithubAuthProvider, GoogleAuthProvider, OAu
 export class LoginComponent {
 
   loginForm: FormGroup;
-  authSub: Subscription = new Subscription();
+  unsubscribeAuth: Subscription = new Subscription();
+  unsubscribeGoogleSsoAuth: Subscription = new Subscription();
 
   constructor(
     private authService: AuthService,
     private router: Router,
-    private auth: Auth
+    private auth: Auth,
+    private notificationService: NotificationHandlingService
   ) {
     this.loginForm = new FormGroup({
       email: new FormControl({ value: '', disabled: false }, [Validators.required, Validators.email]),
@@ -34,20 +37,21 @@ export class LoginComponent {
   onSubmit() {
     const rawUserData = this.loginForm.getRawValue()
     const newUser: UserInterface = { username: rawUserData.username, email: rawUserData.email, password: rawUserData.password }
-    this.authSub = this.authService.login(newUser).subscribe(({
+    this.unsubscribeAuth = this.authService.login(newUser).subscribe(({
       next: () => this.router.navigateByUrl('dashboard'),
-      error: (err) => console.log(err)
+      error: (err: Error) => this.notificationService.error(`Something went wrong! ${err.message}`)
     }))
   }
 
   ngOnDestroy() {
-    this.authSub.unsubscribe();
+    this.unsubscribeAuth.unsubscribe();
+    this.unsubscribeGoogleSsoAuth.unsubscribe();
   }
 
   googleSsoLogin() {
-    this.authService.googleSsoLogin().subscribe({
+    this.unsubscribeGoogleSsoAuth = this.authService.googleSsoLogin().subscribe({
       next: () => this.router.navigateByUrl('dashboard'),
-      error: (err: Error) => console.log(err.message) 
+      error: (err: Error) => this.notificationService.error(`Something went wrong! ${err.message}`)
     })
   }
 }

@@ -14,13 +14,13 @@ import {
   NgApexchartsModule
 } from "ng-apexcharts";
 import { BehaviorSubject, Subscription, catchError, first, map, of, switchMap, tap } from 'rxjs';
+import { BitcoinTimestampsAndPrices } from '../shared/modules/bitcoin-price.interface';
+import { Transaction } from '../shared/modules/transaction.interface';
+import { AuthService } from '../shared/services/auth.service';
 import { BitcoinDataService } from '../shared/services/bitcoin-data.service';
 import { FirestoreDataService } from '../shared/services/firestore-data.service';
 import { UtilityService } from '../shared/services/utility.service';
-import { Transaction } from '../shared/modules/transaction.interface';
-import { BitcoinTimestampsAndPrices } from '../shared/modules/bitcoin-price.interface';
-import { Auth } from '@angular/fire/auth';
-import { AuthService } from '../shared/services/auth.service';
+import { NotificationHandlingService } from '../shared/services/notification-handling.service';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -69,7 +69,13 @@ export class BitcoinChartComponent {
   timeframe: BehaviorSubject<number> = new BehaviorSubject(this.ONE_DAY_IN_MS);
   unsubscribeCurrentUserData: Subscription = new Subscription();
 
-  constructor(private bds: BitcoinDataService, private fds: FirestoreDataService, private utility: UtilityService, private auth: Auth, private authService: AuthService) {
+  constructor(
+    private bds: BitcoinDataService, 
+    private fds: FirestoreDataService, 
+    private utility: UtilityService,
+    private authService: AuthService,
+    private notificationService: NotificationHandlingService
+    ) {
     this.getTransactionDates();
     this.unsubscribeCurrentUserData = authService.currentUser.subscribe((user: any) => {
       if(user) this.getDataForChart(user.uid);
@@ -97,7 +103,7 @@ export class BitcoinChartComponent {
       map(data => this.utility.getStackValue(data)),
       tap(data => this.initChart(data)),
       catchError((err: Error) => {
-        console.log(err.message);
+        this.notificationService.error(`Something went wrong!, ${err.message}`);
         return of([]);
       })
     ).subscribe()
@@ -121,7 +127,11 @@ export class BitcoinChartComponent {
       map((data: any) => data.map((data: Transaction) => data.date)),
       map((data: TransactionDate[]) => this.filterOldestDate(data)),
       tap(date => this.OLDEST_TRANSACTION_DATE = date),
-      first()
+      first(),
+      catchError((err: Error) => {
+        this.notificationService.error(`Something went wrong!, ${err.message}`);
+        return of([]);
+      })
     ).subscribe()
   }
 

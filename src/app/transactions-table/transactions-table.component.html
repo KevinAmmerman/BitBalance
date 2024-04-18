@@ -11,12 +11,13 @@
         </thead>
         <tbody>
             @for (transaction of transactions; track transaction.id) {
-            <tr>
+            <tr (click)="openTransaction(transaction)">
                 <th scope="row">{{ transaction.transactionType }}</th>
                 <td>{{ transaction.amount }} {{transaction.unit}}</td>
                 <td>{{ transaction.cost | number }}€</td>
                 <td>{{ transaction.date }}</td>
-                <td [ngClass]="transaction.value > transaction.cost ? 'positive' : 'negative'">{{ transaction.value }}€</td>
+                <td [ngClass]="transaction.value > transaction.cost ? 'positive' : 'negative'">{{ transaction.value }}€
+                </td>
             </tr>
             }
         </tbody>

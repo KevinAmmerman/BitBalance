@@ -1,38 +1,89 @@
 import { Component } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { NgbActiveModal, NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
+import {
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import {
+  NgbActiveModal,
+  NgbDatepickerModule,
+} from '@ng-bootstrap/ng-bootstrap';
 import { Transaction } from '../shared/modules/transaction.interface';
 import { FirestoreDataService } from '../shared/services/firestore-data.service';
 import { Auth } from '@angular/fire/auth';
 import { NotificationHandlingService } from '../shared/services/notification-handling.service';
+import { ModalService } from '../shared/services/modal.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-add-transaction-dialog',
   standalone: true,
   imports: [NgbDatepickerModule, FormsModule, ReactiveFormsModule],
   templateUrl: './add-transaction-dialog.component.html',
-  styleUrl: './add-transaction-dialog.component.scss'
+  styleUrl: './add-transaction-dialog.component.scss',
 })
 export class AddTransactionDialogComponent {
+  addTransactionForm: FormGroup = new FormGroup('');
 
-  addTransactionForm: FormGroup;
   collectionId: string;
+  unsubscribeModal: Subscription = new Subscription();
 
   constructor(
-    public modal: NgbActiveModal, 
-    private firebaseService: FirestoreDataService, 
+    public modal: NgbActiveModal,
+    private firebaseService: FirestoreDataService,
     private auth: Auth,
-    private notificationService: NotificationHandlingService
-    ) {
+    private notificationService: NotificationHandlingService,
+    private modalService: ModalService
+  ) {
     this.collectionId = auth.currentUser!.uid;
+    this.initForm();
+    this.unsubscribeModal = this.modalService.getObservable.subscribe(
+      (data: Transaction) => {
+        if (data && this.addTransactionForm) {
+          console.log(data);
+        } else {
+          console.log('nix');
+        }
+      }
+    );
+  }
+
+  initForm() {
     this.addTransactionForm = new FormGroup({
-      bitcoin: new FormControl({ value: '', disabled: false }, [Validators.required]),
-      unitType: new FormControl({ value: 'Unit', disabled: false }, Validators.required),
-      cost: new FormControl({ value: '', disabled: false }, Validators.required),
-      transactionType: new FormControl({ value: 'Buy / Sell', disabled: false }, [Validators.required, Validators.pattern('buy|sell')]),
-      date: new FormControl({ value: '', disabled: false }, Validators.required),
-      exchange: new FormControl({ value: '', disabled: false })
-    })
+      bitcoin: new FormControl({ value: '', disabled: false }, [
+        Validators.required,
+      ]),
+      unitType: new FormControl(
+        { value: 'Unit', disabled: false },
+        Validators.required
+      ),
+      cost: new FormControl(
+        { value: '', disabled: false },
+        Validators.required
+      ),
+      transactionType: new FormControl(
+        { value: 'Buy / Sell', disabled: false },
+        [Validators.required, Validators.pattern('buy|sell')]
+      ),
+      date: new FormControl(
+        { value: '', disabled: false },
+        Validators.required
+      ),
+      exchange: new FormControl({ value: '', disabled: false }),
+    });
+  }
+
+  editTransaction(data: Transaction) {
+    this.addTransactionForm.patchValue({
+      bitcoin: data.amount,
+      unitType: data.unit,
+      cost: data.cost,
+      transactionType: data.transactionType,
+      date: data.date,
+      exchange: data.exchange,
+    });
   }
 
   onSubmit() {
@@ -48,7 +99,6 @@ export class AddTransactionDialogComponent {
     }
   }
 
-
   setFormData(): Transaction {
     return {
       amount: this.addTransactionForm.value.bitcoin,
@@ -58,10 +108,9 @@ export class AddTransactionDialogComponent {
       id: new Date().getTime(),
       exchange: this.addTransactionForm.value.exchange,
       transactionType: this.addTransactionForm.value.transactionType,
-      value: 0
-    }
+      value: 0,
+    };
   }
-
 
   resetForm() {
     this.addTransactionForm.reset({
@@ -70,7 +119,7 @@ export class AddTransactionDialogComponent {
       currency: '',
       transactionType: 'Buy / Sell',
       date: '',
-      exchange: ''
+      exchange: '',
     });
   }
 }

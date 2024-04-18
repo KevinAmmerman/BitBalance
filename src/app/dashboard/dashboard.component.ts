@@ -6,20 +6,25 @@ import { StatusComponent } from '../status/status.component';
 import { TransactionsTableComponent } from '../transactions-table/transactions-table.component';
 import { HeaderComponent } from '../shared/header/header.component';
 import { NotificationComponent } from '../shared/notification/notification.component';
+import { ModalService } from '../shared/services/modal.service';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [BitcoinChartComponent, StatusComponent, TransactionsTableComponent, HeaderComponent, NotificationComponent],
+  imports: [
+    BitcoinChartComponent,
+    StatusComponent,
+    TransactionsTableComponent,
+    HeaderComponent,
+    NotificationComponent,
+  ],
   templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.scss'
+  styleUrl: './dashboard.component.scss',
 })
 export class DashboardComponent {
-
-  constructor(private modalService: NgbModal) {}
-
+  constructor(private modalService: ModalService) {}
 
   open() {
-    this.modalService.open(AddTransactionDialogComponent);
+    this.modalService.openModal(AddTransactionDialogComponent);
   }
 }

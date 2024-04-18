@@ -43,5 +43,4 @@ export class RegisterComponent {
     ngOnDestroy() {
       this.unsubscribeAuth.unsubscribe();
     }
-
 }

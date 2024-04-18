@@ -76,9 +76,11 @@ export class BitcoinChartComponent {
     private authService: AuthService,
     private notificationService: NotificationHandlingService
     ) {
-    this.getTransactionDates();
     this.unsubscribeCurrentUserData = authService.currentUser.subscribe((user: any) => {
-      if(user) this.getDataForChart(user.uid);
+      if(user) {
+        this.getTransactionDates(user.uid);
+        this.getDataForChart(user.uid);
+      }
     });
   }
 
@@ -122,8 +124,8 @@ export class BitcoinChartComponent {
   }
 
 
-  getTransactionDates() {
-    this.unsubscribeDate = this.fds.getCollection('test').pipe(
+  getTransactionDates(uid: string) {
+    this.unsubscribeDate = this.fds.getCollection(uid).pipe(
       map((data: any) => data.map((data: Transaction) => data.date)),
       map((data: TransactionDate[]) => this.filterOldestDate(data)),
       tap(date => this.OLDEST_TRANSACTION_DATE = date),

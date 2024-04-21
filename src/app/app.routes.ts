@@ -5,6 +5,7 @@ import { authGuard } from './shared/guards/auth.guard';
 import { LoginComponent } from './user/login/login.component';
 import { RegisterComponent } from './user/register/register.component';
 import { EmailVerificationComponent } from './user/email-verification/email-verification.component';
+import { VerificationSuccessComponent } from './user/verification-success/verification-success.component';
 
 const redirectToLogin = redirectUnauthorizedTo(['sign-in']);
 
@@ -16,5 +17,6 @@ export const routes: Routes = [
         canActivate: [authGuard]
     },
     { path: 'sign-up', component: RegisterComponent },
-    { path: 'verification', component: EmailVerificationComponent }
+    { path: 'verification', component: EmailVerificationComponent },
+    { path: 'success', component: VerificationSuccessComponent }
 ];

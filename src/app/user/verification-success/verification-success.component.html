@@ -1,1 +1,7 @@
-<p>verification-success works!</p>
+<section class="d-flex justify-content-center align-items-center vh-100">
+    <div class="d-flex flex-column align-items-center verification_window">
+        @if (verificationImage) {<img src="{{verificationImage}}" alt="letter logo">}
+        @if (verificationMessage) {<h1>{{verificationMessage}}</h1>}
+        <a class="btn btn-outline-primary my-btn-style my-btn" href="sign-in">Back to sign-in</a>
+    </div>
+</section>

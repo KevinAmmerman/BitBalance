@@ -34,7 +34,7 @@ export class RegisterComponent {
       const rawUserData = this.newUserForm.getRawValue()
       const newUser: UserInterface = {username: rawUserData.username, email: rawUserData.email, password: rawUserData.password}
       this.unsubscribeAuth = this.authService.register(newUser).subscribe({
-        next: () =>this.route.navigateByUrl('sign-in'),
+        next: () =>this.route.navigateByUrl('verification'),
         error: (err: Error) => this.notificationService.error(`Something went wrong! ${err.message}`)
       });
     }

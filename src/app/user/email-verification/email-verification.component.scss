@@ -1,0 +1,12 @@
+.verification_window {
+  text-align: center;
+  border: 1px solid var(--main-color);
+  border-radius: 2rem;
+  padding: 2rem 4rem;
+  width: 500px;
+  gap: 1rem;
+
+  img {
+    width: 7rem;
+  }
+}

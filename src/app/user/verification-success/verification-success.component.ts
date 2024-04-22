@@ -11,8 +11,6 @@ import { applyActionCode, getAuth } from 'firebase/auth';
   styleUrl: './verification-success.component.scss',
 })
 export class VerificationSuccessComponent {
-  verificationMessage: string = 'Email address successfully verified';
-  verificationImage: string = './../../../assets/img/mail_success.png';
 
   constructor(
     private route: ActivatedRoute,
@@ -29,13 +27,9 @@ export class VerificationSuccessComponent {
     try {
       const auth = getAuth();
       await applyActionCode(auth, oobCode);
-      this.verificationMessage = 'Email address successfully verified';
-      this.verificationImage = './../../../assets/img/mail_success.png';
       this.redirectToSignIn();
     } catch (error) {
-      this.verificationMessage =
-        'Something went wrong, please contact the provider of this application';
-      this.verificationImage = './../../../assets/img/mail_error.png';
+      this.notificationService.error('Something went wrong')
     }
   }
 

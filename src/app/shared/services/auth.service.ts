@@ -3,9 +3,12 @@ import {
   Auth,
   GoogleAuthProvider,
   UserCredential,
+  browserLocalPersistence,
+  browserSessionPersistence,
   createUserWithEmailAndPassword,
   onAuthStateChanged,
   sendEmailVerification,
+  setPersistence,
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
@@ -48,7 +51,12 @@ export class AuthService {
     );
   }
 
-  login(user: UserInterface): Observable<void> {
+  login(user: UserInterface, rememberMe: boolean): Observable<void> {
+    if (rememberMe) {
+      setPersistence(this.firebaseAuth, browserLocalPersistence).then(() =>
+        this.updateLocalStorage(rememberMe)
+      );
+    }
     const promise = signInWithEmailAndPassword(
       this.firebaseAuth,
       user.email,
@@ -72,5 +80,10 @@ export class AuthService {
 
   get currentUser(): Observable<string> {
     return this.user$.asObservable();
+  }
+
+  updateLocalStorage(rememberMe: boolean) {
+    if (rememberMe) localStorage.setItem('rememberMe', 'true');
+    else localStorage.removeItem('rememberMe');
   }
 }

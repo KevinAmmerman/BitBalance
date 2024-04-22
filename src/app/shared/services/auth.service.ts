@@ -3,17 +3,16 @@ import {
   Auth,
   GoogleAuthProvider,
   UserCredential,
-  browserLocalPersistence,
-  browserSessionPersistence,
   createUserWithEmailAndPassword,
+  getAuth,
   onAuthStateChanged,
   sendEmailVerification,
   setPersistence,
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
-  updateProfile,
 } from '@angular/fire/auth';
+import { browserLocalPersistence } from 'firebase/auth';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, catchError, from, map } from 'rxjs';
 import { UserInterface } from '../modules/user.interface';
@@ -51,12 +50,7 @@ export class AuthService {
     );
   }
 
-  login(user: UserInterface, rememberMe: boolean): Observable<void> {
-    if (rememberMe) {
-      setPersistence(this.firebaseAuth, browserLocalPersistence).then(() =>
-        this.updateLocalStorage(rememberMe)
-      );
-    }
+  login(user: UserInterface): Observable<void> {
     const promise = signInWithEmailAndPassword(
       this.firebaseAuth,
       user.email,
@@ -80,10 +74,5 @@ export class AuthService {
 
   get currentUser(): Observable<string> {
     return this.user$.asObservable();
-  }
-
-  updateLocalStorage(rememberMe: boolean) {
-    if (rememberMe) localStorage.setItem('rememberMe', 'true');
-    else localStorage.removeItem('rememberMe');
   }
 }

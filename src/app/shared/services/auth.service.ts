@@ -4,27 +4,22 @@ import {
   GoogleAuthProvider,
   UserCredential,
   createUserWithEmailAndPassword,
-  getAuth,
   onAuthStateChanged,
   sendEmailVerification,
-  setPersistence,
   signInWithEmailAndPassword,
   signInWithPopup,
-  signOut,
+  signOut
 } from '@angular/fire/auth';
-import { browserLocalPersistence } from 'firebase/auth';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, catchError, from, map } from 'rxjs';
 import { UserInterface } from '../modules/user.interface';
 import { NotificationHandlingService } from './notification-handling.service';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   firebaseAuth = inject(Auth);
-  afAuth = inject(AngularFireAuth);
   router = inject(Router);
   userData: any;
   user$: BehaviorSubject<any> = new BehaviorSubject('');
@@ -76,10 +71,5 @@ export class AuthService {
 
   get currentUser(): Observable<string> {
     return this.user$.asObservable();
-  }
-
-  verifyEmail(code: string): Observable<void> {
-    const promise = this.afAuth.applyActionCode(code);
-    return from(promise);
   }
 }

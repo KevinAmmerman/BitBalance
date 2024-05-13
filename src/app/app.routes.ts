@@ -7,7 +7,6 @@ import { LoginComponent } from './user/login/login.component';
 import { RegisterComponent } from './user/register/register.component';
 import { VerifyEmailComponent } from './user/verify-email/verify-email.component';
 
-const redirectToLogin = redirectUnauthorizedTo(['sign-in']);
 
 export const routes: Routes = [
     { path: '', redirectTo: 'sign-in', pathMatch: 'full' },

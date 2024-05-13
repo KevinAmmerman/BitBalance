@@ -29,23 +29,19 @@ export class RegisterComponent {
     private notificationService: NotificationHandlingService
   ) {
     this.newUserForm = new FormGroup({
-      username: new FormControl({ value: '', disabled: false }, [
-        Validators.required,
-      ]),
       email: new FormControl({ value: '', disabled: false }, [
         Validators.required,
         Validators.email,
       ]),
       password: new FormControl({ value: '', disabled: false }, [
         Validators.required,
-      ]),
+      ])
     });
   }
 
   onSubmit() {
     const rawUserData = this.newUserForm.getRawValue();
     const newUser: UserInterface = {
-      username: rawUserData.username,
       email: rawUserData.email,
       password: rawUserData.password,
     };

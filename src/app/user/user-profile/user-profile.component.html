@@ -1,0 +1,21 @@
+<div class="border_form">
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Profile Settings</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form (ngSubmit)="onSubmit()" [formGroup]="userForm" class="d-flex flex-column align-items-center gap-4 w-100">
+            <div class="input_container w-100">
+                <div class="form-floating mb-3">
+                    <input formControlName="email" type="email" class="form-control" id="floatingInput" placeholder="name@example.com" [class.error-border]="userForm.get('email')?.touched && userForm.get('email')?.invalid">
+                    <label for="floatingInput">Email address</label>
+                </div>
+                <div class="form-floating">
+                    <input formControlName="password" type="password" class="form-control" id="floatingPassword" placeholder="Password" [class.error-border]="userForm.get('password')?.touched && userForm.get('password')?.invalid">
+                    <label for="floatingPassword">Password</label>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-outline-primary my-btn-style my-btn" [disabled]="!userForm.valid">Send</button>
+        </form>
+    </div>
+</div>

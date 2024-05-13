@@ -41,7 +41,7 @@ export class LoginComponent {
 
   onSubmit() {
     const rawUserData = this.loginForm.getRawValue()
-    const newUser: UserInterface = { username: rawUserData.username, email: rawUserData.email, password: rawUserData.password }
+    const newUser: UserInterface = { email: rawUserData.email, password: rawUserData.password }
     this.unsubscribeAuth = this.authService.login(newUser).subscribe(({
       next: () => this.router.navigateByUrl('dashboard'),
       error: (err: Error) => this.notificationService.error(`Something went wrong! ${err.message}`)

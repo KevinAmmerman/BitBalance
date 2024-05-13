@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { Subscription } from 'rxjs';
+import { ModalService } from '../services/modal.service';
+import { UserProfileComponent } from '../../user/user-profile/user-profile.component';
 
 @Component({
   selector: 'app-header',
@@ -14,7 +16,15 @@ export class HeaderComponent {
 
   authSub: Subscription = new Subscription();
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService, 
+    private router: Router,
+    private modalService: ModalService
+  ) {}
+
+  open() {
+    this.modalService.openModal(UserProfileComponent);
+  }
 
   logout() {
     this.authSub = this.authService.logout().subscribe({
